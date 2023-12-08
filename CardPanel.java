@@ -22,6 +22,9 @@ public class CardPanel extends JPanel {
     private JComboBox<Integer> yourPawnSelector = new JComboBox<>(numbers);
     private JComboBox<Integer> opponentSelector = new JComboBox<>(numbers);
     private JComboBox<Integer> opponentPawnSelector = new JComboBox<>(numbers);
+    private Runnable onConfirmCallback;
+    private boolean selectionConfirmed = false;
+    private GameManager gameManager;
 
     public CardPanel(String cardText) {
         this.setLayout(new FlowLayout(FlowLayout.CENTER));
@@ -33,11 +36,52 @@ public class CardPanel extends JPanel {
         this.setBackground(Color.BLACK);
     }
 
+    public CardPanel(String cardText, GameManager gameManager) {
+        this.setLayout(new FlowLayout(FlowLayout.CENTER));
+        cardLabel = new JLabel("<html><body style='width: 150px'>" + cardText + "</body></html>");
+        cardLabel.setForeground(Color.BLACK);
+        this.add(cardLabel);
+        this.setPreferredSize(new Dimension(200, 250)); 
+        this.setBorder(BorderFactory.createLineBorder(Color.BLACK));
+        this.setBackground(Color.BLACK);
+        this.gameManager = gameManager;
+    }
+
+    /* 
+    public void setupTurn(String newCard, Board board, List<Player> players, int currentPlayer) {
+        // Update the card and input components
+        UpdateForTurn(newCard, board, players, currentPlayer);
+
+        // Reset selection flag
+        selectionConfirmed = false;
+
+        // Change the ActionListener for confirm button
+        confirmButton.addActionListener(e -> {
+            handleUserSelection(newCard, board, players, currentPlayer);
+            selectionConfirmed = true;
+            gameManager.initiateNextTurn(this, board, players, currentPlayer);
+            System.out.println("FROM SETUPTURN NEXTPLAYER: " + currentPlayer);
+        });
+    }
+    */
+    public void resetSelectionConfirmed() {
+        selectionConfirmed = false;
+    }
+    
+    public void setSelectionConfirmed(boolean confirmed) {
+        this.selectionConfirmed = confirmed;
+    }
+
+    public boolean isSelectionConfirmed() {
+        return this.selectionConfirmed;
+    }
+
     public void updateCard(String newText) {
         cardLabel.setText("<html><body style='width: 150px'>" + newText + "</body></html>");
     }
 
-    public void UpdateForTurn(String newText, Board board, List<Player> players, int currentPlayer) {
+    public void UpdateForTurn(String newText, Board board, List<Player> players) {
+        int currentPlayer = gameManager.getCurrentPlayer();
         updateCard(newText);
         removeAllInputComponents();
         if (newText.equals(Turn1())) {
@@ -73,7 +117,7 @@ public class CardPanel extends JPanel {
             this.add(optionA);
         } else if (newText.equals(Turn7())) {
             optionA = new JRadioButton("Move Forward 7");
-            optionB = new JRadioButton("Split between 2 Pawns");
+            optionB = new JRadioButton("Split between 2 Pawns (7)");
             ButtonGroup group = new ButtonGroup();
             group.add(optionA);
             group.add(optionB);
@@ -158,14 +202,22 @@ public class CardPanel extends JPanel {
         }
         this.add(pieceSelector);
         this.add(confirmButton);
-        confirmButton.addActionListener(e -> handleUserSelection(newText, board, players, currentPlayer));
-
-
+        System.out.println("BEFORE ACTIONLISTENER" + currentPlayer);
+        for (ActionListener al : confirmButton.getActionListeners()) {
+            confirmButton.removeActionListener(al);
+        }
+    
+        // Add new action listener
+        confirmButton.addActionListener(e -> {
+            handleUserSelection(newText, board, players);
+        });
+        System.out.println("END OF ACTIONLISTENER" + currentPlayer);
         revalidate();
         repaint();
     }
     
-    public void handleUserSelection(String CurrentCard, Board board, List<Player> players, int currentPlayer) {
+    public void handleUserSelection(String CurrentCard, Board board, List<Player> players) {
+        int currentPlayer = gameManager.getCurrentPlayer();
         Integer selectedpeice = (Integer) pieceSelector.getSelectedItem();
         if (CurrentCard.equals(Turn1())) {
             if (optionA.isSelected()) {
@@ -261,6 +313,7 @@ public class CardPanel extends JPanel {
                 board.movePiece(players, opponentIndex, opponentPawnIndex, (61-opponentPiece.getIndex())+ opponentPiece.GetHomeIndex());
             }
         }
+        gameManager.initiateNextTurn(this, board, players);
     }
 
     public void removeAllInputComponents() {
@@ -273,47 +326,47 @@ public class CardPanel extends JPanel {
     }
 
     public String Turn1() {
-        return "Card 1";
+        return "Card 1 - Current Player:" + gameManager.getCurrentPlayer();
     }
 
     public String Turn2() {
-        return "Card 2";
+        return "Card 2 - Current Player:" + gameManager.getCurrentPlayer();
     }
 
     public String Turn3() {
-        return "Card 3";
+        return "Card 3 - Current Player:" + gameManager.getCurrentPlayer();
     }
 
     public String Turn4() {
-        return "Card 4";
+        return "Card 4 - Current Player:" + gameManager.getCurrentPlayer();
     }
 
     public String Turn5() {
-        return "Card 5";
+        return "Card 5 - Current Player:" + gameManager.getCurrentPlayer();
     }
 
     public String Turn7() {
-        return "Card 7";
+        return "Card 7 - Current Player:" + gameManager.getCurrentPlayer();
     }
 
     public String Turn8() {
-        return "Card 8";
+        return "Card 8 - Current Player:" + gameManager.getCurrentPlayer();
     }
 
     public String Turn10() {
-        return "Card 10";
+        return "Card 10 - Current Player:" + gameManager.getCurrentPlayer();
     }
 
     public String Turn11() {
-        return "Card 11";
+        return "Card 11 - Current Player:" + gameManager.getCurrentPlayer();
     }
 
     public String Turn12() {
-        return "Card 12";
+        return "Card 12 - Current Player:" + gameManager.getCurrentPlayer();
     }
 
     public String TurnSorry() {
-        return "Sorry Card!";
+        return "Sorry Card! - Current Player:" + gameManager.getCurrentPlayer();
     }   
 
 }

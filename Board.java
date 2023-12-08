@@ -23,7 +23,7 @@ public class Board  {
 
         // Add the board panel to the layered pane
         layeredPane.add(boardPanel, Integer.valueOf(1));
-
+        /* 
         // Create and add the card panel
         CardPanel cardPanel = new CardPanel("Welcome to Sorry!");
         cardPanel.setBackground(Color.WHITE);
@@ -31,13 +31,14 @@ public class Board  {
         int centerX = (1450 - cardPanel.getPreferredSize().width) / 2;
         int centerY = (800 - cardPanel.getPreferredSize().height) / 2;
         cardPanel.setBounds(centerX, centerY, cardPanel.getPreferredSize().width, cardPanel.getPreferredSize().height);
-        cardPanel.UpdateForTurn(cardPanel.TurnSorry(), this, players, 0);
+        //cardPanel.UpdateForTurn(cardPanel.TurnSorry(), this, players, 0);
         // FIGURE OUT HOW TO HANDLE CURRENTPLAYER
 
 
         // Add the card panel to the layered pane
         layeredPane.add(cardPanel, Integer.valueOf(2));
         //cardPanel.UpdateForTurn(cardPanel.TurnSorry(), this, players, 1);
+        */
     }
 
     public JPanel getBoardPanel() {
@@ -51,16 +52,16 @@ public class Board  {
             JPanel square;
     
             if (i == 82) {
-                square = new CirclePanel(Color.RED, "HOME");
+                square = new CirclePanel(Color.RED, "HOME (P0)");
                 square.setBackground(Color.WHITE);
             } else if (i == 42) {
-                square = new CirclePanel(Color.BLUE, "HOME");
+                square = new CirclePanel(Color.BLUE, "HOME (P1)");
                 square.setBackground(Color.WHITE);
             } else if (i == 213) {
-                square = new CirclePanel(Color.GREEN, "HOME");
+                square = new CirclePanel(Color.GREEN, "HOME (P2)");
                 square.setBackground(Color.WHITE);
             } else if (i == 173) {
-                square = new CirclePanel(Color.YELLOW, "HOME");
+                square = new CirclePanel(Color.YELLOW, "HOME (P3)");
                 square.setBackground(Color.WHITE);
             } else if (i == 20) {
                 square = new CirclePanel(Color.RED, "START");
@@ -103,40 +104,44 @@ public class Board  {
         }
         for (int j = 0; j < NUM_PLAYERS; j++) {
             if (players.get(j).getColor() == Color.RED) {
+                int i = 0;
                 for (GamePiece piece : players.get(j).getPieces()) {
                     int boardPosition = piece.getPos(); 
                     JPanel panel = (JPanel) boardPanel.getComponent(boardPosition);
-                    CirclePanel pieceRepresentation = new CirclePanel(players.get(j).getColor(), "");
+                    CirclePanel pieceRepresentation = new CirclePanel(players.get(j).getColor(), Integer.toString(i++));
                     pieceRepresentation.setGamePiece(piece);
                     pieceRepresentation.setBackground(Color.BLACK);
                     panel.add(pieceRepresentation);
                 }
             }
             else if (players.get(j).getColor() == Color.BLUE) {
+                int i = 0;
                 for (GamePiece piece : players.get(j).getPieces()) {
                     int boardPosition = piece.getPos(); 
                     JPanel panel = (JPanel) boardPanel.getComponent(boardPosition);
-                    CirclePanel pieceRepresentation = new CirclePanel(players.get(j).getColor(), "");
+                    CirclePanel pieceRepresentation = new CirclePanel(players.get(j).getColor(), Integer.toString(i++));
                     pieceRepresentation.setGamePiece(piece);
                     pieceRepresentation.setBackground(Color.BLACK);
                     panel.add(pieceRepresentation);
                 }
             }
             else if (players.get(j).getColor() == Color.GREEN) {
+                int i = 0;
                 for (GamePiece piece : players.get(j).getPieces()) {
                     int boardPosition = piece.getPos(); 
                     JPanel panel = (JPanel) boardPanel.getComponent(boardPosition);
-                    CirclePanel pieceRepresentation = new CirclePanel(players.get(j).getColor(), "");
+                    CirclePanel pieceRepresentation = new CirclePanel(players.get(j).getColor(), Integer.toString(i++));
                     pieceRepresentation.setGamePiece(piece);
                     pieceRepresentation.setBackground(Color.BLACK);
                     panel.add(pieceRepresentation);
                 }
             }
             else if (players.get(j).getColor() == Color.YELLOW) {
+                int i = 0;
                 for (GamePiece piece : players.get(j).getPieces()) {
                     int boardPosition = piece.getPos(); 
                     JPanel panel = (JPanel) boardPanel.getComponent(boardPosition);
-                    CirclePanel pieceRepresentation = new CirclePanel(players.get(j).getColor(), "");
+                    CirclePanel pieceRepresentation = new CirclePanel(players.get(j).getColor(), Integer.toString(i++));
                     pieceRepresentation.setGamePiece(piece);
                     pieceRepresentation.setBackground(Color.BLACK);
                     panel.add(pieceRepresentation);

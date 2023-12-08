@@ -29,4 +29,14 @@ public class Player {
         System.out.println(piece);
         this.pieces.get(piece).move(x);
     }
+
+    public boolean isFinished() {
+        int count = 0;
+        for (GamePiece piece : this.pieces) {
+            if (piece.isHome()) {
+                count++;
+            }
+        }
+        return count == 4;
+    }
 }
