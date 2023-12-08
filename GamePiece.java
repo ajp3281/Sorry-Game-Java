@@ -6,6 +6,7 @@ import java.util.ArrayList;
 
 public class GamePiece {
     private ArrayList<Integer> pos;
+    private ArrayList<Integer> SafePos;
     private int index;
     private Color color;
     private boolean isSafe;
@@ -13,9 +14,9 @@ public class GamePiece {
     private boolean Started;
 
     public GamePiece(int index, Color color) {
-        pos = new ArrayList<Integer>(64);
+        this.pos = new ArrayList<Integer>(64);
         for (int i = 0; i < 16; i++) {
-            pos.add(i);
+            this.pos.add(i);
         }
         
         for (int i = 1; i < 16; i++) {
@@ -33,6 +34,25 @@ public class GamePiece {
         this.isSafe = false;
         this.isHome = false;
         this.index = index;
+        this.Started = true; // false
+    }
+
+    public void AddSafeSlots(Color color) {
+        this.SafePos = new ArrayList<Integer>(5);
+        if (color == Color.RED) {
+            for (int i = 1; i < 6; i++) {
+                System.out.println(i*16+2);
+                this.SafePos.add(i*16+2);
+            }
+        }
+    }
+
+    public boolean canEnterSafe(int index,Color color) {
+        if (index >= 2 && index <= 6 && color == Color.RED) {
+            this.setSafe(true);
+            return true;
+        }
+        return false;
     }
 
     public void setHome(boolean isHome) {

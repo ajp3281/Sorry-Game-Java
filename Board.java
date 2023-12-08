@@ -19,26 +19,10 @@ public class Board  {
 
         boardPanel = new JPanel(new GridLayout(BOARD_SIZE, BOARD_SIZE));
         setupBoard(boardPanel, players);
-        boardPanel.setBounds(0, 0, 1450, 800); // Set bounds for the board panel
+        boardPanel.setBounds(0, 0, 1450, 900); // Set bounds for the board panel
 
         // Add the board panel to the layered pane
         layeredPane.add(boardPanel, Integer.valueOf(1));
-        /* 
-        // Create and add the card panel
-        CardPanel cardPanel = new CardPanel("Welcome to Sorry!");
-        cardPanel.setBackground(Color.WHITE);
-        // Calculate center position
-        int centerX = (1450 - cardPanel.getPreferredSize().width) / 2;
-        int centerY = (800 - cardPanel.getPreferredSize().height) / 2;
-        cardPanel.setBounds(centerX, centerY, cardPanel.getPreferredSize().width, cardPanel.getPreferredSize().height);
-        //cardPanel.UpdateForTurn(cardPanel.TurnSorry(), this, players, 0);
-        // FIGURE OUT HOW TO HANDLE CURRENTPLAYER
-
-
-        // Add the card panel to the layered pane
-        layeredPane.add(cardPanel, Integer.valueOf(2));
-        //cardPanel.UpdateForTurn(cardPanel.TurnSorry(), this, players, 1);
-        */
     }
 
     public JPanel getBoardPanel() {
@@ -58,10 +42,10 @@ public class Board  {
                 square = new CirclePanel(Color.BLUE, "HOME (P1)");
                 square.setBackground(Color.WHITE);
             } else if (i == 213) {
-                square = new CirclePanel(Color.GREEN, "HOME (P2)");
+                square = new CirclePanel(Color.GREEN, "HOME (P3)");
                 square.setBackground(Color.WHITE);
             } else if (i == 173) {
-                square = new CirclePanel(Color.YELLOW, "HOME (P3)");
+                square = new CirclePanel(Color.YELLOW, "HOME (P2)");
                 square.setBackground(Color.WHITE);
             } else if (i == 20) {
                 square = new CirclePanel(Color.RED, "START");
@@ -108,7 +92,7 @@ public class Board  {
                 for (GamePiece piece : players.get(j).getPieces()) {
                     int boardPosition = piece.getPos(); 
                     JPanel panel = (JPanel) boardPanel.getComponent(boardPosition);
-                    CirclePanel pieceRepresentation = new CirclePanel(players.get(j).getColor(), Integer.toString(i++));
+                    CirclePanel pieceRepresentation = new CirclePanel(players.get(j).getColor(), Integer.toString(i++) + 'S', 21);
                     pieceRepresentation.setGamePiece(piece);
                     pieceRepresentation.setBackground(Color.BLACK);
                     panel.add(pieceRepresentation);
@@ -119,7 +103,7 @@ public class Board  {
                 for (GamePiece piece : players.get(j).getPieces()) {
                     int boardPosition = piece.getPos(); 
                     JPanel panel = (JPanel) boardPanel.getComponent(boardPosition);
-                    CirclePanel pieceRepresentation = new CirclePanel(players.get(j).getColor(), Integer.toString(i++));
+                    CirclePanel pieceRepresentation = new CirclePanel(players.get(j).getColor(), Integer.toString(i++) + 'S', 21);
                     pieceRepresentation.setGamePiece(piece);
                     pieceRepresentation.setBackground(Color.BLACK);
                     panel.add(pieceRepresentation);
@@ -130,7 +114,7 @@ public class Board  {
                 for (GamePiece piece : players.get(j).getPieces()) {
                     int boardPosition = piece.getPos(); 
                     JPanel panel = (JPanel) boardPanel.getComponent(boardPosition);
-                    CirclePanel pieceRepresentation = new CirclePanel(players.get(j).getColor(), Integer.toString(i++));
+                    CirclePanel pieceRepresentation = new CirclePanel(players.get(j).getColor(), Integer.toString(i++) + 'S', 21);
                     pieceRepresentation.setGamePiece(piece);
                     pieceRepresentation.setBackground(Color.BLACK);
                     panel.add(pieceRepresentation);
@@ -141,7 +125,7 @@ public class Board  {
                 for (GamePiece piece : players.get(j).getPieces()) {
                     int boardPosition = piece.getPos(); 
                     JPanel panel = (JPanel) boardPanel.getComponent(boardPosition);
-                    CirclePanel pieceRepresentation = new CirclePanel(players.get(j).getColor(), Integer.toString(i++));
+                    CirclePanel pieceRepresentation = new CirclePanel(players.get(j).getColor(), Integer.toString(i++) + 'S', 21);
                     pieceRepresentation.setGamePiece(piece);
                     pieceRepresentation.setBackground(Color.BLACK);
                     panel.add(pieceRepresentation);
@@ -150,10 +134,34 @@ public class Board  {
         }
 
     }
+
+    public void RemoveStartIndex(GamePiece pieceToRemove) {
+        int currentPosition = pieceToRemove.getPos();
+        JPanel panel = (JPanel) boardPanel.getComponent(currentPosition);
+        for (Component comp : panel.getComponents()) {
+            if (comp instanceof CirclePanel) {
+                CirclePanel circle = (CirclePanel) comp;
+                if (circle.getGamePiece().equals(pieceToRemove)) {
+                    circle.SetText(circle.GetText());
+                    panel.revalidate();
+                    panel.repaint();
+                }
+            }
+        }
+        
+        
+    }
     
     public void movePiece(List<Player> players, int currentPlayer, int pieceIndex, int newPosition) {
         GamePiece pieceToMove = players.get(currentPlayer).getPieces().get(pieceIndex);
         int currentPosition = pieceToMove.getPos();
+        System.out.println(pieceToMove.isStarted());
+        if (pieceToMove.isStarted() == false) {
+            return;
+        }
+        if (pieceToMove.canEnterSafe(newPosition, pieceToMove.getColor()) == true) {
+            // move safe pos only
+        }
     
         JPanel currentPanel = (JPanel) boardPanel.getComponent(currentPosition);
         CirclePanel movingPiece = removeGamePieceFromPanel(currentPanel, pieceToMove);

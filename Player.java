@@ -5,7 +5,7 @@ public class Player {
     private List<GamePiece> pieces;
     private Color color;
 
-    public Player(Color color, int position) {
+    public Player(int position, Color color) {
         this.color = color;
         this.pieces = new ArrayList<GamePiece>();
         for (int i = 0; i < 4; i++) {
@@ -29,6 +29,13 @@ public class Player {
         System.out.println(piece);
         this.pieces.get(piece).move(x);
     }
+    /* 
+    public void AddSafeSlots(Color color) {
+        for (GamePiece piece : this.pieces) {
+            piece.AddSafeSlots(color);
+        }
+    }
+    */
 
     public boolean isFinished() {
         int count = 0;

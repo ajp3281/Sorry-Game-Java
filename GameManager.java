@@ -36,21 +36,27 @@ public class GameManager extends JFrame {
 
     public static List<Player> InitializePlayers(){
         List<Player> players = new ArrayList<Player>();
-        players.add(new Player(Color.RED, 4));
-        players.add(new Player(Color.BLUE, 20));
-        players.add(new Player(Color.YELLOW, 35));
-        players.add(new Player(Color.GREEN, 50));
+        players.add(new Player(0, Color.RED)); // should be 4
+        players.add(new Player(20, Color.BLUE));
+        players.add(new Player(35, Color.YELLOW));
+        players.add(new Player(50, Color.GREEN));
         return players;
     }
 
     public void initiateNextTurn(CardPanel cardPanel, Board board, List<Player> players) {
+        if (GameOver(players)) {
+            cardPanel.UpdateForTurn(cardPanel.TurnGameOver(), board, players);
+            return;
+        }
         currentPlayer = (currentPlayer + 1) % 4;
-        System.out.println("NEW TURN");
         GetNextCard(cardPanel, board, players, currentPlayer);
-        cardPanel.setBackground(players.get(currentPlayer).getColor()); // Update background color
+        cardPanel.setBackground(players.get(currentPlayer).getColor()); 
     }
 
-
+    public void RedrawNextTurn(CardPanel cardPanel, Board board, List<Player> players) {
+        GetNextCard(cardPanel, board, players, currentPlayer);
+        cardPanel.setBackground(players.get(currentPlayer).getColor());
+    }
     
 
     private boolean GameOver(List<Player> players) {
@@ -60,13 +66,11 @@ public class GameManager extends JFrame {
                 count++;
             }
         }
-        return count == 3;
+        System.out.println(count);
+        return count == 4;
     }
 
     private void GetNextCard(CardPanel cardPanel, Board board, List<Player> players, int currPlayer) {
-        System.out.println("Currentplayer" + currentPlayer);
-        System.out.println("currPlayer" + currPlayer);
-        System.out.println("Currentplayer" + players.get(currentPlayer).getColor());
         int x = (int)(Math.random() * 11) + 1;
         if (x == 1) {
             cardPanel.UpdateForTurn(cardPanel.Turn1(), board, players);

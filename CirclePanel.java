@@ -9,10 +9,22 @@ public class CirclePanel extends JPanel {
         private String text;
         private GamePiece gamepiece;
 
-
         public CirclePanel(Color circleColor, String text) {
             this.circleColor = circleColor;
             this.text = text;
+        }
+
+        public CirclePanel(Color circleColor, String text, int diameter) {
+            this(circleColor, text);
+            setPreferredSize(new Dimension(diameter,diameter));
+        }
+
+        public void SetText(String text) {
+            this.text = text.substring(0, text.length()-1);
+        }
+
+        public String GetText() {
+            return this.text;
         }
 
         public void setGamePiece(GamePiece gamePiece) {

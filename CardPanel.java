@@ -93,8 +93,8 @@ public class CardPanel extends JPanel {
             this.add(optionA);
             this.add(optionB);
         } else if (newText.equals(Turn2())) {
-            optionA = new JRadioButton("Move from Start");
-            optionB = new JRadioButton("Move Forward 2");
+            optionA = new JRadioButton("Move from Start (Redraw)");
+            optionB = new JRadioButton("Move Forward 2 (Redraw)");
             ButtonGroup group = new ButtonGroup();
             group.add(optionA);
             group.add(optionB);
@@ -199,10 +199,12 @@ public class CardPanel extends JPanel {
 
             this.add(new JLabel("Opponent's Pawn:"));
             this.add(opponentPawnSelector);
+        } else if (newText.equals(TurnGameOver())) {
+            this.add(new JLabel("Game Over!"));
+            return;
         }
         this.add(pieceSelector);
         this.add(confirmButton);
-        System.out.println("BEFORE ACTIONLISTENER" + currentPlayer);
         for (ActionListener al : confirmButton.getActionListeners()) {
             confirmButton.removeActionListener(al);
         }
@@ -211,7 +213,6 @@ public class CardPanel extends JPanel {
         confirmButton.addActionListener(e -> {
             handleUserSelection(newText, board, players);
         });
-        System.out.println("END OF ACTIONLISTENER" + currentPlayer);
         revalidate();
         repaint();
     }
@@ -222,6 +223,7 @@ public class CardPanel extends JPanel {
         if (CurrentCard.equals(Turn1())) {
             if (optionA.isSelected()) {
                 players.get(currentPlayer).getPieces().get(selectedpeice).setStarted(true);
+                board.RemoveStartIndex(players.get(currentPlayer).getPieces().get(selectedpeice));
             }
             else if (optionB.isSelected()) {
                 board.movePiece(players, currentPlayer, selectedpeice, 1);
@@ -229,11 +231,13 @@ public class CardPanel extends JPanel {
         } else if (CurrentCard.equals(Turn2())) {
             if (optionA.isSelected()) {
                 players.get(currentPlayer).getPieces().get(selectedpeice).setStarted(true);
+                board.RemoveStartIndex(players.get(currentPlayer).getPieces().get(selectedpeice));
             }
             else if (optionB.isSelected()) {
                 board.movePiece(players, currentPlayer, selectedpeice, 2);
             }
-            // HANDLE DRAW AGAIN
+            gameManager.RedrawNextTurn(this, board, players);
+            return;
         } else if (CurrentCard.equals(Turn3())) {
             if (optionA.isSelected()) {
                 board.movePiece(players, currentPlayer, selectedpeice, 3);
@@ -368,6 +372,10 @@ public class CardPanel extends JPanel {
     public String TurnSorry() {
         return "Sorry Card! - Current Player:" + gameManager.getCurrentPlayer();
     }   
+
+    public String TurnGameOver() {
+        return "Game Over!";
+    }
 
 }
 
