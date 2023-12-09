@@ -36,10 +36,14 @@ public class GameManager extends JFrame {
 
     public static List<Player> InitializePlayers(){
         List<Player> players = new ArrayList<Player>();
-        players.add(new Player(0, Color.RED)); // should be 4
+        players.add(new Player(4, Color.RED)); 
+        players.get(0).AddSafeSlots(Color.RED);
         players.add(new Player(20, Color.BLUE));
-        players.add(new Player(35, Color.YELLOW));
-        players.add(new Player(50, Color.GREEN));
+        players.get(1).AddSafeSlots(Color.BLUE);
+        players.add(new Player(34, Color.YELLOW));
+        players.get(2).AddSafeSlots(Color.YELLOW);
+        players.add(new Player(49, Color.GREEN));
+        players.get(3).AddSafeSlots(Color.GREEN);
         return players;
     }
 
@@ -66,12 +70,11 @@ public class GameManager extends JFrame {
                 count++;
             }
         }
-        System.out.println(count);
         return count == 4;
     }
 
     private void GetNextCard(CardPanel cardPanel, Board board, List<Player> players, int currPlayer) {
-        int x = (int)(Math.random() * 11) + 1;
+        int x = (int)(Math.random() * 12) + 1;
         if (x == 1) {
             cardPanel.UpdateForTurn(cardPanel.Turn1(), board, players);
         } else if (x == 2) {
@@ -94,6 +97,8 @@ public class GameManager extends JFrame {
             cardPanel.UpdateForTurn(cardPanel.Turn12(), board, players);
         } else if (x == 11){
             cardPanel.UpdateForTurn(cardPanel.TurnSorry(), board, players);
+        } else if (x == 12) {
+            cardPanel.UpdateForTurn(cardPanel.TurnWildCard(), board, players);
         }
     }
 

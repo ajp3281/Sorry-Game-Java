@@ -21,21 +21,23 @@ public class Player {
         return this.color;
     }
 
-    public List<GamePiece> getPieces() {
-        return this.pieces;
-    }
-
-    public void movePiece(int piece, int x) {
-        System.out.println(piece);
-        this.pieces.get(piece).move(x);
-    }
-    /* 
     public void AddSafeSlots(Color color) {
         for (GamePiece piece : this.pieces) {
             piece.AddSafeSlots(color);
         }
     }
-    */
+
+    public List<GamePiece> getPieces() {
+        return this.pieces;
+    }
+
+    public void movePiece(int piece, int x) {
+        this.pieces.get(piece).move(x);
+    }
+
+    public void setPieces(List<GamePiece> pieces) {
+        this.pieces = pieces;
+    }
 
     public boolean isFinished() {
         int count = 0;

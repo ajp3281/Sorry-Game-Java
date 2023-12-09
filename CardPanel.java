@@ -47,23 +47,6 @@ public class CardPanel extends JPanel {
         this.gameManager = gameManager;
     }
 
-    /* 
-    public void setupTurn(String newCard, Board board, List<Player> players, int currentPlayer) {
-        // Update the card and input components
-        UpdateForTurn(newCard, board, players, currentPlayer);
-
-        // Reset selection flag
-        selectionConfirmed = false;
-
-        // Change the ActionListener for confirm button
-        confirmButton.addActionListener(e -> {
-            handleUserSelection(newCard, board, players, currentPlayer);
-            selectionConfirmed = true;
-            gameManager.initiateNextTurn(this, board, players, currentPlayer);
-            System.out.println("FROM SETUPTURN NEXTPLAYER: " + currentPlayer);
-        });
-    }
-    */
     public void resetSelectionConfirmed() {
         selectionConfirmed = false;
     }
@@ -158,8 +141,8 @@ public class CardPanel extends JPanel {
             opponentSelector.removeAllItems();
 
             for (int i = 0; i < players.size(); i++) {
-                if (i != currentPlayer) {
-                    opponentSelector.addItem(i); // Add player index or name
+                if (i != currentPlayer && !players.get(i).isFinished()) {
+                    opponentSelector.addItem(i); 
                 }
             }
 
@@ -178,7 +161,7 @@ public class CardPanel extends JPanel {
             group.add(optionA);
             this.add(optionA);
         } else if (newText.equals(TurnSorry())) {
-            String optionAText = "Swap home pawnnewlinewith opponent";
+            String optionAText = "Swap pawn and newlineOpponent pawn goes home";
             optionAText = "<html>" + optionAText.replace("newline", "<br>") + "</html>"; 
             optionA = new JRadioButton(optionAText);
             ButtonGroup group = new ButtonGroup();
@@ -187,8 +170,8 @@ public class CardPanel extends JPanel {
             opponentSelector.removeAllItems();
 
             for (int i = 0; i < players.size(); i++) {
-                if (i != currentPlayer) {
-                    opponentSelector.addItem(i); // Add player index or name
+                if (i != currentPlayer && !players.get(i).isFinished()) {
+                    opponentSelector.addItem(i); 
                 }
             }
             this.add(new JLabel("Your Pawn:"));
@@ -202,14 +185,28 @@ public class CardPanel extends JPanel {
         } else if (newText.equals(TurnGameOver())) {
             this.add(new JLabel("Game Over!"));
             return;
+        } else if (newText.equals(TurnWildCard())) {
+            optionA = new JRadioButton("Swap all Pawns w/ Opponent");
+            optionB = new JRadioButton("Pass on Wildcard");
+            this.add(optionA);
+            this.add(optionB);
+            ButtonGroup group = new ButtonGroup();
+            group.add(optionA);
+            group.add(optionB);
+            opponentSelector.removeAllItems();
+
+            for (int i = 0; i < players.size(); i++) {
+                if (i != currentPlayer && !players.get(i).isFinished()) {
+                    opponentSelector.addItem(i); 
+                }
+            }
         }
         this.add(pieceSelector);
         this.add(confirmButton);
         for (ActionListener al : confirmButton.getActionListeners()) {
             confirmButton.removeActionListener(al);
-        }
-    
-        // Add new action listener
+        } 
+
         confirmButton.addActionListener(e -> {
             handleUserSelection(newText, board, players);
         });
@@ -244,7 +241,7 @@ public class CardPanel extends JPanel {
             }
         } else if (CurrentCard.equals(Turn4())) {
             if (optionA.isSelected()) {
-                board.movePiece(players, currentPlayer, selectedpeice, -4);
+                board.movePiece(players, currentPlayer, selectedpeice, -4 );
             }
         } else if (CurrentCard.equals(Turn5())) {
             if (optionA.isSelected()) {
@@ -264,9 +261,7 @@ public class CardPanel extends JPanel {
                 if (pawn1Move + pawn2Move == 7) {
                     board.movePiece(players, currentPlayer, pawn1Index, pawn1Move);
                     board.movePiece(players, currentPlayer, pawn2Index, pawn2Move);
-                } else {
-                    // Handle error - total moves exceed 7
-                }
+                } 
             }
         } else if (CurrentCard.equals(Turn8())) {
             if (optionA.isSelected()) {
@@ -290,12 +285,15 @@ public class CardPanel extends JPanel {
 
                 GamePiece yourPiece = players.get(currentPlayer).getPieces().get(yourPawnIndex);
                 GamePiece opponentPiece = players.get(opponentIndex).getPieces().get(opponentPawnIndex);
+                if (opponentPiece.isHome() || opponentPiece.isSafe() ) {
+                    return;
+                } else {
+                    int OpponentLocation = opponentPiece.getIndex();
+                    int YourLocation = yourPiece.getIndex();
 
-                int OpponentLocation = opponentPiece.getIndex();
-                int YourLocation = yourPiece.getIndex();
-
-                board.movePiece(players, currentPlayer, yourPawnIndex, (61-yourPiece.getIndex())+ OpponentLocation);
-                board.movePiece(players, opponentIndex, opponentPawnIndex, (61-opponentPiece.getIndex())+ YourLocation);
+                    board.movePiece(players, currentPlayer, yourPawnIndex, (60-yourPiece.getIndex())+ OpponentLocation);
+                    board.movePiece(players, opponentIndex, opponentPawnIndex, (60-opponentPiece.getIndex())+ YourLocation);
+                }
             }
         } else if (CurrentCard.equals(Turn12())) {
             if (optionA.isSelected()) {
@@ -308,13 +306,24 @@ public class CardPanel extends JPanel {
                 int opponentPawnIndex = (Integer) opponentPawnSelector.getSelectedItem();
 
                 GamePiece yourPiece = players.get(currentPlayer).getPieces().get(yourPawnIndex);
+                if (!yourPiece.isHome()) {
+                    gameManager.initiateNextTurn(this, board, players);
+                }
                 GamePiece opponentPiece = players.get(opponentIndex).getPieces().get(opponentPawnIndex);
 
                 int OpponentLocation = opponentPiece.getIndex();
-                int YourLocation = yourPiece.getIndex();
-                System.out.println("Opponent home: " + opponentPiece.GetHomeIndex());
-                board.movePiece(players, currentPlayer, yourPawnIndex, (61-yourPiece.getIndex())+ OpponentLocation);
-                board.movePiece(players, opponentIndex, opponentPawnIndex, (61-opponentPiece.getIndex())+ opponentPiece.GetHomeIndex());
+                board.movePiece(players, currentPlayer, yourPawnIndex, (60-yourPiece.getIndex())+ OpponentLocation);
+                board.movePiece(players, opponentIndex, opponentPawnIndex, (60-opponentPiece.getIndex())+ opponentPiece.getStartLocation());
+            }
+        } else if (CurrentCard.equals(TurnWildCard())) {
+            if (optionA.isSelected()) {
+                int opponentIndex = (Integer) opponentSelector.getSelectedItem();
+                List<GamePiece> tempCurrentPlayerPieces = new ArrayList<>(players.get(currentPlayer).getPieces());
+
+                players.get(currentPlayer).setPieces(new ArrayList<>(players.get(opponentIndex).getPieces()));
+                players.get(opponentIndex).setPieces(tempCurrentPlayerPieces);
+                board.swapPlayerPiecesOnBoard(players.get(currentPlayer), players.get(opponentIndex));
+                
             }
         }
         gameManager.initiateNextTurn(this, board, players);
@@ -372,6 +381,10 @@ public class CardPanel extends JPanel {
     public String TurnSorry() {
         return "Sorry Card! - Current Player:" + gameManager.getCurrentPlayer();
     }   
+
+    public String TurnWildCard() {
+        return "Wild Card! - Current Player:" + gameManager.getCurrentPlayer();
+    }
 
     public String TurnGameOver() {
         return "Game Over!";
